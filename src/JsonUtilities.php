@@ -11,6 +11,35 @@ abstract class JsonUtilities
         else
             return '[]';
     }
+
+    private static function arrayToJson(array $array)
+    {
+        $nonAssoc = [];
+        $assoc    = [];
+
+        foreach ($array as $key => $value) {
+            $nonAssoc[]  = $value;
+            $assoc[$key] = $value;
+        }
+
+        if (array_diff($nonAssoc, $assoc) == array_diff($assoc, $assoc)) {
+            return self::fromArray($nonAssoc);
+        }
+
+        return self::fromAssocArray($assoc);
+    }
+
+    private static function assocToObjectLiteral($assoc)
+    {
+        $string  = "{";
+
+        foreach($assoc as $key => $value) {
+            $string .= "\"{$key}\":\"{$value}\"";
+        }
+
+        $string .= "}";
+    }
+
     private static function fromArray($array)
     {
         $string = '[';
@@ -23,6 +52,7 @@ abstract class JsonUtilities
 
         return $string;
     }
+
     private static function fromObject($object)
     {
         $reflection = new ReflectionClass($object);
